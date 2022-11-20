@@ -1,5 +1,5 @@
 import struct
-from gl import *
+from gl import setColor
 
 class Texture(object):
 

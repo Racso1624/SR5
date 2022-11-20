@@ -6,6 +6,7 @@
 import struct
 from obj import *
 from vector import *
+from texture import *
 
 def char(c):
     #1 byte
@@ -177,7 +178,7 @@ class Render(object):
                 y += 1 if y0 < y1 else -1
                 threshold += dx * 2
 
-    def transform_vertex(self, vertex, translate, scale):
+    def transform_vertex(self, vertex, translate, scale, texture = None):
         return V3(
             round((vertex[0] * scale[0]) + translate[0]),
             round((vertex[1] * scale[1]) + translate[1]),
@@ -218,13 +219,16 @@ class Render(object):
 
     def triangle(self, A, B, C, cord_tex = None, texture = None, color = None, intensity = 1):
 
-        light = V3(-1, 1, -1)
+        light = V3(0, 0, 1)
         normal = (B - A) * (C - A)
 
         i = normal.norm() @ light.norm()
 
         if i < 0:
-            return
+            i = abs(i)
+        
+        if i > 1:
+            i = 1
 
         color_tex = 1 * i
 
@@ -246,12 +250,13 @@ class Render(object):
                     tx = tA.x * w + tB.x * v + tC.x * u
                     ty = tA.y * w + tB.y * v + tC.y * u
 
+                    color = texture.get_color(tx, ty, intensity)
 
                 z = A.z * w + B.z * v + C.z * u
 
-                if(self.zBuffer[x][y] < z):
+                if(x < len(self.zBuffer) and y < len(self.zBuffer) and z > self.zBuffer[x][y]):
                     self.zBuffer[x][y] = z
-                    self.glPoint(x, y)
+                    self.glPoint(x, y, color)
 
 
     def glFinish(self, filename):

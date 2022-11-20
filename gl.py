@@ -19,7 +19,7 @@ def dword(l):
     #4 bytes
     return struct.pack('=l', l)
 
-def setColor(r, b, g):
+def setColor(r, g, b):
     return bytes([int(b * 255), int(g * 255), int(r * 255)])
 
 def bounding_box(A, B, C):
@@ -216,7 +216,7 @@ class Render(object):
 
                 self.triangle(v1, v2, v3)
 
-    def triangle(self, A, B, C, color = None):
+    def triangle(self, A, B, C, cord_tex = None, texture = None, color = None, intensity = 1):
 
         light = V3(-1, 1, -1)
         normal = (B - A) * (C - A)
@@ -241,6 +241,12 @@ class Render(object):
                 if(w < 0 or v < 0 or u < 0):
                     continue
                 
+                if texture:
+                    tA, tB, tC = cord_tex
+                    tx = tA.x * w + tB.x * v + tC.x * u
+                    ty = tA.y * w + tB.y * v + tC.y * u
+
+
                 z = A.z * w + B.z * v + C.z * u
 
                 if(self.zBuffer[x][y] < z):

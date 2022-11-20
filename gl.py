@@ -226,7 +226,6 @@ class Render(object):
 
         if i < 0:
             i = abs(i)
-        
         if i > 1:
             i = 1
 

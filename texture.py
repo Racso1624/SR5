@@ -1,5 +1,7 @@
 import struct
-from gl import setColor
+
+def setColor(r, g, b):
+    return bytes([int(b * 255), int(g * 255), int(r * 255)])
 
 class Texture(object):
 

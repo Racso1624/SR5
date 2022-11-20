@@ -4,6 +4,7 @@
 #SR5
 
 from gl import Render
+from texture import *
 
 r = Render()
 
@@ -15,6 +16,8 @@ r.glColor(0, 0, 0)
 
 r.glClear()
 
-r.load('./cup.obj', translate=[300, 300, 0], scale=[50, 50, 10])
+r.texture = Texture('./earth.bmp')
 
-r.glFinish("sr4.bmp")
+r.load('./earth.obj', translate=[512, 512, 0], scale=[1, 1, 1])
+
+r.glFinish("sr5.bmp")

@@ -178,14 +178,14 @@ class Render(object):
                 y += 1 if y0 < y1 else -1
                 threshold += dx * 2
 
-    def transform_vertex(self, vertex, translate, scale, texture = None):
+    def transform_vertex(self, vertex, translate, scale):
         return V3(
             round((vertex[0] * scale[0]) + translate[0]),
             round((vertex[1] * scale[1]) + translate[1]),
             round((vertex[2] * scale[2]) + translate[2])
         )
 
-    def load(self, filename, translate, scale):
+    def load(self, filename, translate, scale, texture = None):
         model = Obj(filename)
 
 
@@ -203,8 +203,23 @@ class Render(object):
                 v3 = self.transform_vertex(model.vertices[f3], translate, scale)
                 v4 = self.transform_vertex(model.vertices[f4], translate, scale)
 
-                self.triangle(v1, v2, v4)
-                self.triangle(v2, v3, v4)
+                if not texture:
+                    self.triangle(v1, v2, v3)
+                    self.triangle(v1, v3, v4)
+                else:
+                    t1 = face[0][1] - 1
+                    t2 = face[1][1] - 1
+                    t3 = face[2][1] - 1
+                    t4 = face[3][1] - 1
+
+                    tA = V3(*model.tvertices[t1])
+                    tB = V3(*model.tvertices[t2])
+                    tC = V3(*model.tvertices[t3])
+                    tD = V3(*model.tvertices[t4])
+
+                    self.triangle(v1, v2, v3, (tA, tB, tC), texture)
+                    self.triangle(v1, v3, v4, (tA, tC, tD), texture)
+
             
             elif vcount == 3:
                 f1 = face[0][0] - 1
@@ -215,7 +230,18 @@ class Render(object):
                 v2 = self.transform_vertex(model.vertices[f2], translate, scale)
                 v3 = self.transform_vertex(model.vertices[f3], translate, scale)
 
-                self.triangle(v1, v2, v3)
+                if not texture:
+                    self.triangle(v1, v2, v3)
+                else:
+                    t1 = face[0][1] - 1
+                    t2 = face[1][1] - 1
+                    t3 = face[2][1] - 1
+
+                    tA = V3(*model.tvertices[t1])
+                    tB = V3(*model.tvertices[t2])
+                    tC = V3(*model.tvertices[t3])
+
+                    self.triangle(v1, v2, v3, (tA, tB, tC), texture)
 
     def triangle(self, A, B, C, cord_tex = None, texture = None, color = None, intensity = 1):
 
@@ -249,7 +275,7 @@ class Render(object):
                     tx = tA.x * w + tB.x * v + tC.x * u
                     ty = tA.y * w + tB.y * v + tC.y * u
 
-                    color = texture.get_color(tx, ty, intensity)
+                    color = texture.get_color_with_intensity(tx, ty, intensity)
 
                 z = A.z * w + B.z * v + C.z * u
 

@@ -16,8 +16,8 @@ r.glColor(0, 0, 0)
 
 r.glClear()
 
-r.texture = Texture('./earth.bmp')
+textura = Texture('./earth.bmp')
 
-r.load('./earth.obj', translate=[512, 512, 0], scale=[1, 1, 1])
+r.load('./earth.obj', translate=[512, 512, 0], scale=[1, 1, 1], texture=textura)
 
 r.glFinish("sr5.bmp")

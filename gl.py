@@ -272,8 +272,8 @@ class Render(object):
                 
                 if texture:
                     tA, tB, tC = cord_tex
-                    tx = tA.x * w + tB.x * v + tC.x * u
-                    ty = tA.y * w + tB.y * v + tC.y * u
+                    tx = tA.x * w + tB.x * u + tC.x * v
+                    ty = tA.y * w + tB.y * u + tC.y * v
 
                     color = texture.get_color_with_intensity(tx, ty, intensity)
 
